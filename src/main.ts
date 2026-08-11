@@ -9,6 +9,11 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  });
+
   app.setGlobalPrefix('api/profile', { exclude: [''] });
   await app.listen(8080);
 }

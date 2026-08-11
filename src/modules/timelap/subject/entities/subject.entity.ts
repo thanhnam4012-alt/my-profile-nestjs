@@ -16,6 +16,9 @@ export class Subject {
   @Prop({ required: true })
   timeEnd!: number;
 
+  @Prop({ required: true })
+  dayOfWeek!: number;
+
   @Prop()
   room!: string;
 
