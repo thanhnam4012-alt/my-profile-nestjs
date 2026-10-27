@@ -17,4 +17,4 @@ async function bootstrap() {
   app.setGlobalPrefix('api/profile', { exclude: [''] });
   await app.listen(8080);
 }
-bootstrap();
+void bootstrap();

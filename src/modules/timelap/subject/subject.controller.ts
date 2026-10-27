@@ -13,7 +13,7 @@ import { UpdateSubjectDto } from './dto/update-subject.dto';
 
 @Controller('subject')
 export class SubjectController {
-  constructor(private readonly subjectService: SubjectService) { }
+  constructor(private readonly subjectService: SubjectService) {}
 
   @Post()
   create(@Body() createSubjectDto: CreateSubjectDto) {

@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SubjectModule } from './modules/timelap/subject/subject.module';
+import { TopicModule } from './modules/vocabulary/topic/topic.module';
 
 @Module({
   imports: [
@@ -19,8 +20,9 @@ import { SubjectModule } from './modules/timelap/subject/subject.module';
       inject: [ConfigService],
     }),
     SubjectModule,
+    TopicModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
