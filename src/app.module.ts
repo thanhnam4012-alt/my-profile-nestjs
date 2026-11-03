@@ -3,8 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SubjectModule } from './modules/timelap/subject/subject.module';
 import { TopicModule } from './modules/vocabulary/topic/topic.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -19,8 +19,8 @@ import { TopicModule } from './modules/vocabulary/topic/topic.module';
       }),
       inject: [ConfigService],
     }),
-    SubjectModule,
     TopicModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
