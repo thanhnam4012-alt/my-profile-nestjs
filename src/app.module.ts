@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TopicModule } from './modules/vocabulary/topic/topic.module';
 import { UserModule } from './modules/user/user.module';
+import { UserStreakModule } from './modules/user-streak/user-streak.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserModule } from './modules/user/user.module';
     }),
     TopicModule,
     UserModule,
+    UserStreakModule,
   ],
   controllers: [AppController],
   providers: [AppService],
