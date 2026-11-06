@@ -15,6 +15,7 @@ import {
 import { MakeupCheckinDto } from './dto/makeup-checkin.dto';
 import { EarnPointsDto } from './dto/earn-points.dto';
 import { QueryCalendarDto } from './dto/query-calendar.dto';
+import { QueryWeekDto } from './dto/query-week.dto';
 import {
   DAILY_CHECKIN_POINTS,
   MAKEUP_COST,
@@ -26,6 +27,7 @@ import {
   findChainRange,
   getDaysInMonth,
   getVnDateString,
+  getWeekdayIndex,
 } from './utils/user-streak.utils';
 
 @Injectable()
@@ -95,6 +97,60 @@ export class UserStreakService {
       success: true,
       data: { month, days },
     };
+  }
+
+  // ───────────── API: Lịch điểm danh theo tuần ─────────────
+  async getWeekly(userId: string, query?: QueryWeekDto) {
+    const streak = await this.getOrCreateStreak(userId);
+    const today = getVnDateString();
+    const currentMonth = today.slice(0, 7); // 'YYYY-MM'
+    const firstDayOfCurrentMonth = `${currentMonth}-01`;
+
+    const targetDate = query?.date ?? today;
+    const weekdayIndex = getWeekdayIndex(targetDate);
+    const startDate = addDays(targetDate, -weekdayIndex);
+    const endDate = addDays(startDate, 6);
+
+    // Lấy các ngày đã điểm danh trong tuần (từ Thứ 2 đến Chủ Nhật)
+    const records = await this.checkinModel
+      .find({ userId: streak.userId, date: { $gte: startDate, $lte: endDate } })
+      .lean()
+      .exec();
+    const recordMap = new Map(records.map((r) => [r.date, r]));
+
+    const days = Array.from({ length: 7 }, (_, index) => {
+      const date = addDays(startDate, index);
+      const record = recordMap.get(date);
+
+      let status: 'checkin' | 'makeup' | 'today' | 'missed' | 'future';
+      if (record) status = record.type;
+      else if (date === today) status = 'today';
+      else if (date > today) status = 'future';
+      else status = 'missed';
+
+      return {
+        date,
+        status,
+        // Chỉ được bù những ngày bị lỡ trong quá khứ thuộc tháng hiện tại
+        canMakeup:
+          status === 'missed' && date < today && date >= firstDayOfCurrentMonth,
+        milestones: record?.milestones ?? [],
+      };
+    });
+
+    return {
+      success: true,
+      data: {
+        startDate,
+        endDate,
+        days,
+      },
+    };
+  }
+
+  /** Alias cho getWeekly */
+  async getWeeklyCalendar(userId: string, query?: QueryWeekDto) {
+    return this.getWeekly(userId, query);
   }
 
   // ───────────── API 3: Điểm danh hôm nay ─────────────

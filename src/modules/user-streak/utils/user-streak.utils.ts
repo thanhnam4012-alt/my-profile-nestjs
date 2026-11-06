@@ -26,6 +26,16 @@ export function getDaysInMonth(month: string): number {
 }
 
 /**
+ * Trả về thứ trong tuần dạng index (0 = Thứ 2, ..., 6 = Chủ Nhật)
+ */
+export function getWeekdayIndex(dateStr: string): number {
+  const [year, mon, day] = dateStr.split('-').map(Number);
+  const d = new Date(Date.UTC(year, mon - 1, day));
+  const dayOfWeek = d.getUTCDay(); // 0: CN, 1: T2, ..., 6: T7
+  return (dayOfWeek + 6) % 7;
+}
+
+/**
  * Tính chuỗi hiện tại và chuỗi dài nhất.
  * sortedDates: danh sách ngày đã điểm danh, sắp xếp tăng dần, không trùng.
  */

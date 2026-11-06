@@ -3,6 +3,7 @@ import { UserStreakService } from './user-streak.service';
 import { MakeupCheckinDto } from './dto/makeup-checkin.dto';
 import { EarnPointsDto } from './dto/earn-points.dto';
 import { QueryCalendarDto } from './dto/query-calendar.dto';
+import { QueryWeekDto } from './dto/query-week.dto';
 
 @Controller('streaks')
 export class UserStreakController {
@@ -21,6 +22,12 @@ export class UserStreakController {
     @Query() query: QueryCalendarDto,
   ) {
     return this.userStreakService.getCalendar(userId, query);
+  }
+
+  // GET /streaks/:userId/week?date=2026-11-06 (hoặc /streaks/:userId/weekly)
+  @Get([':userId/week', ':userId/weekly'])
+  getWeekly(@Param('userId') userId: string, @Query() query: QueryWeekDto) {
+    return this.userStreakService.getWeekly(userId, query);
   }
 
   // POST /streaks/:userId/checkin
